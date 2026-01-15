@@ -3,3 +3,11 @@
 # get WireCell sim-only module instead
 physics.producers.simtpc2d: @local::sbnd_wcls_sim
 #physics.producers.simtpc2d: @local::sbnd_wcls
+
+physics.producers.opdaq.PMTBaseline: 0
+physics.producers.opdaq.PMTBaselineRMS: 0
+physics.producers.opdaq.PMTDarkNoiseRate: 0
+
+physics.producers.opdaq.ArapucaBaseline: 0
+physics.producers.opdaq.ArapucaBaselineRMS: 0
+physics.producers.opdaq.ArapucaDarkNoiseRate: 0

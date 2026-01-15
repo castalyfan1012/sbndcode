@@ -41,7 +41,7 @@
 //#include "larcore/Geometry/Geometry.h"
 /////////////////////
 
-#include "sbnobj/Common/CRT/CRTHit.hh"
+#include "sbnobj/SBND/CRT/FEBData.hh"
 
 #include "art/Persistency/Common/PtrMaker.h"
 
@@ -165,7 +165,7 @@ OverlayProducts::OverlayProducts(fhicl::ParameterSet const& p)
   }
   if ( fPMTOverlayHits ) produces< std::vector<recob::OpHit> >();
 
-  if ( fCRTOverlayHits ) produces< std::vector<sbn::crt::CRTHit> >();
+  if ( fCRTOverlayHits ) produces< std::vector<sbnd::crt::FEBData> >();
 }
 
 void OverlayProducts::produce(art::Event& e)
@@ -721,45 +721,40 @@ void OverlayProducts::produce(art::Event& e)
     e.put( std::move(opHitVec) );
   }
 
-  // CRT Overlays
+    // CRT Overlays
   if ( fCRTOverlayHits ) {
-    std::unique_ptr< std::vector< sbn::crt::CRTHit > > crtHitVec = std::make_unique< std::vector< sbn::crt::CRTHit > >();
+    constexpr size_t N_CH = 32;
+
+    std::unique_ptr< std::vector< sbnd::crt::FEBData > > crtFEBVec = std::make_unique< std::vector< sbnd::crt::FEBData > >();
 
     for ( auto const& iLabel : fCRTHitInputLabels ) {
-      art::Handle< std::vector<sbn::crt::CRTHit> > hitsHandle;
-      std::vector< art::Ptr<sbn::crt::CRTHit> > hits;
-      if ( e.getByLabel(iLabel,hitsHandle) ) {
-	art::fill_ptr_vector(hits,hitsHandle);
+      art::Handle< std::vector<sbnd::crt::FEBData> > febHandle;
+      std::vector< art::Ptr<sbnd::crt::FEBData> > febs;
+      if ( e.getByLabel(iLabel,febHandle) ) {
+	art::fill_ptr_vector(febs,febHandle);
       }
       else{
-	mf::LogWarning("OverlayProducts") << "Event failed to find sbn::crt::CRTHit with label " << iLabel << ".";
+	mf::LogWarning("OverlayProducts") << "Event failed to find sbnd::crt::FEBData with label " << iLabel << ".";
         return;
       }
 
-      for ( auto const& iHit : hits ) {
-	sbn::crt::CRTHit newCRTHit;
-	newCRTHit.feb_id      = iHit->feb_id;
-	newCRTHit.pesmap      = iHit->pesmap;
-	newCRTHit.peshit      = iHit->peshit;
-	newCRTHit.ts0_s       = iHit->ts0_s;
-	newCRTHit.ts0_s_corr  = iHit->ts0_s_corr;
-	newCRTHit.ts0_ns      = iHit->ts0_ns;
-	newCRTHit.ts0_ns_corr = iHit->ts0_ns_corr;
-	newCRTHit.ts1_ns      = iHit->ts1_ns;
-	newCRTHit.plane       = iHit->plane;
-	newCRTHit.x_pos       = iHit->x_pos;
-	newCRTHit.x_err       = iHit->x_err;
-	newCRTHit.y_pos       = iHit->y_pos;
-	newCRTHit.y_err       = iHit->y_err;
-	newCRTHit.z_pos       = iHit->z_pos;
-	newCRTHit.z_err       = iHit->z_err;
-	newCRTHit.tagger      = iHit->tagger;
+      for ( auto const& iFEB : febs ) {
+	sbnd::crt::FEBData mergedFEB;
+	mergedFEB.SetMac5( iFEB->Mac5() );
+	mergedFEB.SetFlags( iFEB->Flags() );
+	mergedFEB.SetTs0( iFEB->Ts0() );
+	mergedFEB.SetTs1( iFEB->Ts1() );
+	mergedFEB.SetUnixS( iFEB->UnixS() );
+	for ( size_t i = 0; i < N_CH; ++i ) {
+	  mergedFEB.SetADC( i, iFEB->ADC(i) );
+	}
+	mergedFEB.SetCoinc( iFEB->Coinc() );
 
-        crtHitVec->push_back( newCRTHit );
-      } // hit
+        crtFEBVec->push_back( mergedFEB );
+      } // FEB
     } // label
 
-    e.put( std::move(crtHitVec) );
+    e.put( std::move(crtFEBVec) );
   }
 }
 

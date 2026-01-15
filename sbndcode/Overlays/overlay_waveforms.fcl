@@ -45,13 +45,13 @@ physics.producers: {
     PMTOverlayRaw: false
     PMTOverlayHits: false
     CRTOverlayHits: true
-    CRTHitInputLabels: ["crthit","mccrthit"]
+    CRTHitInputLabels: ["crtdecoder", "crtsim" ]
   }
 }
 
 ## Use the following to run the full defined stage0 set of modules
-# physics.reco: [ overlayTPC, overlayOpWaveforms, overlayCRTHit]
-physics.reco: [ overlayTPC, overlayOpWaveforms ]
+physics.reco: [ overlayTPC, overlayOpWaveforms, overlayCRTHit]
+# physics.reco: [ overlayTPC, overlayOpWaveforms ]
 
 ## boiler plate...
 physics.stream1:       [ out1 ]

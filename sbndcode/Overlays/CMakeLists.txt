@@ -3,6 +3,7 @@ cet_enable_asserts()
 cet_build_plugin(OverlayProducts art::module LIBRARIES
         #icaruscode::Timing
         sbnobj::Common_PMT_Data
+        sbnobj::SBND_CRT
         larcore::Geometry_Geometry_service
         art_root_io::TFileService_service
         art_root_io::tfile_support
@@ -19,6 +20,7 @@ cet_build_plugin(OverlayProducts art::module LIBRARIES
 cet_build_plugin(OverlayAna
         art::module LIBRARIES
         sbnobj::Common_PMT_Data
+        sbnobj::SBND_CRT
         larcore::Geometry_Geometry_service
         art_root_io::TFileService_service
         art_root_io::tfile_support

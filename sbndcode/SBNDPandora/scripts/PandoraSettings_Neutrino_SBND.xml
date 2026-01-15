@@ -81,8 +81,15 @@
   </algorithm>
   <algorithm type = "LArHitWidthClusterMerging"/>
 
+  <!-- 3D neutrino vertex reconstruction (from cheat config) -->
+  <algorithm type = "LArCheatingVertexCreation">
+    <OutputVertexListName>NeutrinoVertices3D</OutputVertexListName>
+    <ReplaceCurrentVertexList>true</ReplaceCurrentVertexList>
+    <VertexXCorrection>0.495694</VertexXCorrection>
+  </algorithm>
+  
   <!-- VertexAlgorithms -->
-  <algorithm type = "LArCutClusterCharacterisation">
+  <!-- <algorithm type = "LArCutClusterCharacterisation">
     <InputClusterListNames>ClustersU ClustersV ClustersW</InputClusterListNames>
   </algorithm>
   <algorithm type = "LArCandidateVertexCreation">
@@ -121,7 +128,7 @@
   </algorithm>
   <algorithm type = "LArVertexSplitting">
     <InputClusterListNames>ClustersU ClustersV ClustersW</InputClusterListNames>
-  </algorithm>
+  </algorithm> -->
 
   <!-- ThreeDTrackAlgorithms -->
   <algorithm type = "LArThreeDTransverseTracks">
